@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  mongodb:
+    container_name: TTCloneDB
+    image: mongo:latest
+    environment:
+      - MONGODB_DATABASE="TTCloneDB"
+    ports:
+      - "5000:27017"
