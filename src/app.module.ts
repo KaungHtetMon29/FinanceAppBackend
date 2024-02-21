@@ -11,9 +11,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { JwtGuardGuard } from './jwt-guard/jwt-guard.guard';
 import { JwtService } from '@nestjs/jwt';
 import { RolebaseGuard } from './rolebase/rolebase.guard';
+import { UserBalanceModule } from './user_balance/user_balance.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), UsersModule, TaskModule],
+  // TaskModule
+  imports: [ScheduleModule.forRoot(), UsersModule, UserBalanceModule],
   providers: [
     JwtService,
     {
