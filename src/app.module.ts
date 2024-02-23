@@ -12,10 +12,17 @@ import { JwtGuardGuard } from './jwt-guard/jwt-guard.guard';
 import { JwtService } from '@nestjs/jwt';
 import { RolebaseGuard } from './rolebase/rolebase.guard';
 import { UserBalanceModule } from './user_balance/user_balance.module';
+import { UserHistoryModule } from './user_history/user_history.module';
 
 @Module({
   // TaskModule
-  imports: [ScheduleModule.forRoot(), UsersModule, UserBalanceModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    DatabaseModule,
+    UsersModule,
+    UserBalanceModule,
+    UserHistoryModule,
+  ],
   providers: [
     JwtService,
     {

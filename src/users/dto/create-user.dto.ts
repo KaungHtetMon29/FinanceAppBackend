@@ -1,8 +1,13 @@
 import { Exclude } from 'class-transformer';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
-  readonly uid: number;
+  @IsNotEmpty()
   readonly name: string;
+
+  @IsNotEmpty()
   readonly email: string;
+
+  @IsNotEmpty()
   readonly password: string;
 }
