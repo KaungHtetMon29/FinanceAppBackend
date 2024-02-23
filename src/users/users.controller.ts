@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { RoleDec } from 'src/rolebase/role.decorator';
 import { Role } from 'src/rolebase/role.enum';
+import { ObjectId } from 'mongoose';
 
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
@@ -31,8 +32,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') id: ObjectId) {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')

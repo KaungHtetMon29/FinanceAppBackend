@@ -12,7 +12,7 @@ import { CreateUserBalanceDto } from './dto/create-user_balance.dto';
 import { UpdateUserBalanceDto } from './dto/update-user_balance.dto';
 import { ObjectId } from 'mongoose';
 
-@Controller({ path: 'user_balance', version: '1' })
+@Controller({ path: 'user-balance', version: '1' })
 export class UserBalanceController {
   constructor(private readonly userBalanceService: UserBalanceService) {}
 
@@ -40,7 +40,7 @@ export class UserBalanceController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userBalanceService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.userBalanceService.remove(id);
   }
 }

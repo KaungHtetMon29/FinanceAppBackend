@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { User } from './interfaces/users.interface';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
@@ -15,11 +15,13 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    return await this.usersModel.findOneAndUpdate(
-      { email: createUserDto.email },
-      createUserDto,
-      { upsert: true, new: true, runValidators: true },
-    );
+    const user = new this.usersModel(createUserDto);
+    return user.save();
+    // return await this.usersModel.findOneAndUpdate(
+    //   { email: createUserDto.email },
+    //   createUserDto,
+    //   { upsert: true, new: true, runValidators: true },
+    // );
   }
 
   async findAll() {
@@ -29,11 +31,10 @@ export class UsersService {
       await this.cacheManager.set('users', value);
     }
     console.log(value);
-
     return value;
   }
 
-  async findOne(id: number) {
+  async findOne(id: ObjectId) {
     return `This action returns a #${id} user`;
   }
 

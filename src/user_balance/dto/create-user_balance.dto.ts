@@ -4,5 +4,5 @@ export class CreateUserBalanceDto {
   readonly ubid: number;
   readonly date: Date;
   readonly balance: number;
-  userid: ObjectId;
+  readonly user: ObjectId;
 }
