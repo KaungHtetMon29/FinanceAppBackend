@@ -11,4 +11,5 @@ export const userHistorySchema = new mongoose.Schema({
   date: { type: Date, required: true },
   detail: { type: String, required: true },
   cost: { type: Number, required: true },
+  type: { type: String, enum: ['+', '-'], required: true },
 });

@@ -11,13 +11,18 @@ import { UserHistoryService } from './user_history.service';
 import { CreateUserHistoryDto } from './dto/create-user_history.dto';
 import { UpdateUserHistoryDto } from './dto/update-user_history.dto';
 import { ObjectId } from 'mongoose';
+import { UserIdValidate } from 'src/decorators/user-id-validate/user-id-validate.decorator';
 
 @Controller({ path: 'user-history', version: '1' })
 export class UserHistoryController {
   constructor(private readonly userHistoryService: UserHistoryService) {}
 
   @Post()
-  create(@Body() createUserHistoryDto: CreateUserHistoryDto) {
+  create(
+    @Body()
+    @UserIdValidate(['user', 'ubid'])
+    createUserHistoryDto: CreateUserHistoryDto,
+  ) {
     return this.userHistoryService.create(createUserHistoryDto);
   }
 
@@ -27,8 +32,9 @@ export class UserHistoryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userHistoryService.findOne(+id);
+  findOne(@Param('id') @UserIdValidate(['id']) id: ObjectId) {
+    console.log('c' + id);
+    return this.userHistoryService.findOne(id);
   }
 
   @Patch(':id')

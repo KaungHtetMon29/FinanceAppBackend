@@ -11,13 +11,18 @@ import { UserBalanceService } from './user_balance.service';
 import { CreateUserBalanceDto } from './dto/create-user_balance.dto';
 import { UpdateUserBalanceDto } from './dto/update-user_balance.dto';
 import { ObjectId } from 'mongoose';
+import { UserIdValidate } from 'src/decorators/user-id-validate/user-id-validate.decorator';
 
 @Controller({ path: 'user-balance', version: '1' })
 export class UserBalanceController {
   constructor(private readonly userBalanceService: UserBalanceService) {}
 
   @Post()
-  create(@Body() createUserBalanceDto: CreateUserBalanceDto) {
+  create(
+    @Body()
+    @UserIdValidate(['user'])
+    createUserBalanceDto: CreateUserBalanceDto,
+  ) {
     return this.userBalanceService.create(createUserBalanceDto);
   }
 
@@ -27,7 +32,7 @@ export class UserBalanceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: ObjectId) {
+  findOne(@Param('id') @UserIdValidate(['id']) id: ObjectId) {
     return this.userBalanceService.findOne(id);
   }
 
