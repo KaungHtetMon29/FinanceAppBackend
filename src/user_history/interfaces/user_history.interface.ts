@@ -4,4 +4,5 @@ export default interface UserHistoryInterface {
   readonly date: Date;
   readonly detail: string;
   readonly cost: number;
+  readonly type: '+' | '-';
 }

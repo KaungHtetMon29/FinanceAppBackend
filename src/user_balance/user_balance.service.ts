@@ -12,7 +12,6 @@ import { UserBalance } from './entities/user_balance.entity';
 import { Model, ObjectId } from 'mongoose';
 import { UserBalanceInterface } from './interfaces/users.interface';
 import { User } from 'src/users/interfaces/users.interface';
-import { ItemnotFoundFilter } from 'src/filters/ItemnotFound.filter';
 import { throwError } from 'rxjs';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
@@ -59,7 +58,7 @@ export class UserBalanceService {
       await this.cacheManager.set('userBalance', userBalance);
     }
     return userBalance;
-    return `This action returns all userBalance`;
+    // return `This action returns all userBalance`;
   }
 
   async findOne(id: ObjectId) {
@@ -73,8 +72,6 @@ export class UserBalanceService {
       switch (error.name) {
         case 'NotFoundException':
           throw new NotFoundException('User Balance ID not found');
-        case 'CastError':
-          throw new BadRequestException(error.message);
         default:
           throw new InternalServerErrorException(error.message);
       }

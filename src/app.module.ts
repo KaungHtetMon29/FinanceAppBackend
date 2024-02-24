@@ -13,10 +13,32 @@ import { JwtService } from '@nestjs/jwt';
 import { RolebaseGuard } from './rolebase/rolebase.guard';
 import { UserBalanceModule } from './user_balance/user_balance.module';
 import { UserHistoryModule } from './user_history/user_history.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
 @Module({
   // TaskModule
   imports: [
+    // TaskModule,
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: 'kaunghtetmon467@gmail.com',
+          pass: 'maha vnpd ujmq vbqd',
+        },
+      },
+      defaults: {
+        from: '"No Reply" <no-reply@yourdomain.com>',
+      },
+      // template: {
+      //   dir: __dirname + '/templates',
+      //   adapter: new EjsAdapter(),
+      //   options: {
+      //     strict: true,
+      //   },
+      // },
+    }),
     ScheduleModule.forRoot(),
     DatabaseModule,
     UsersModule,
