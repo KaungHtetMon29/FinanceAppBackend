@@ -85,7 +85,31 @@ export class UserHistoryService {
   }
 
   async update(id: ObjectId, updateUserHistoryDto: UpdateUserHistoryDto) {
-    return `This action updates a #${id} userHistory`;
+    const userHistory = await this.userHistoryModel.findOne({ _id: id });
+    if (!userHistory) {
+      throw new NotFoundException('User History not found');
+    }
+    const userBalance = await this.userBalanceModel.findOne({
+      _id: userHistory.ubid,
+    });
+    switch (userHistory.type) {
+      case '+':
+        userBalance.balance -= userHistory.cost;
+        userBalance.balance = userBalance.balance + updateUserHistoryDto.cost;
+        break;
+      case '-':
+        userBalance.balance += userHistory.cost;
+        userBalance.balance = userBalance.balance - updateUserHistoryDto.cost;
+        break;
+    }
+    await this.userBalanceModel.findOneAndUpdate(
+      { _id: userBalance._id },
+      userBalance,
+    );
+    return await this.userHistoryModel
+      .findOneAndUpdate({ _id: id }, updateUserHistoryDto, { new: true })
+      .populate('ubid');
+    // return `This action updates a #${id} userHistory`;
   }
 
   async remove(id: ObjectId) {
