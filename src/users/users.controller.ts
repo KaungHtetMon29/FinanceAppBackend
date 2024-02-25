@@ -42,7 +42,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.usersService.remove(id);
   }
 }

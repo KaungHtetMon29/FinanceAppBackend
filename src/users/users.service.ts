@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Model, ObjectId } from 'mongoose';
@@ -13,8 +13,10 @@ export class UsersService {
     @Inject('USER_MODEL')
     private usersModel: Model<User>,
   ) {}
+  private readonly logger: Logger = new Logger(UsersService.name);
 
   async create(createUserDto: CreateUserDto) {
+    this.logger.log(`user create input: ${JSON.stringify(createUserDto)}`);
     const user = new this.usersModel(createUserDto);
     return user.save();
     // return await this.usersModel.findOneAndUpdate(
@@ -39,14 +41,16 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    return await this.usersModel.findOneAndUpdate(
-      { email: id },
-      updateUserDto,
-      { new: true, runValidators: true },
-    );
+    this.logger.log(`user update id input: ${JSON.stringify(id)}`);
+    this.logger.log(`user update input: ${JSON.stringify(updateUserDto)}`);
+    return await this.usersModel.findOneAndUpdate({ _id: id }, updateUserDto, {
+      new: true,
+      runValidators: true,
+    });
   }
 
-  async remove(id: number) {
+  async remove(id: ObjectId) {
+    return await this.usersModel.findOneAndDelete({ _id: id });
     return `This action removes a #${id} user`;
   }
 }

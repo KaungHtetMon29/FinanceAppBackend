@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
@@ -27,7 +28,11 @@ export class UserHistoryService {
     @Inject('USER_HISTORY_MODEL')
     private userHistoryModel: Model<UserHistoryInterface>,
   ) {}
+  private readonly logger: Logger = new Logger(UserHistoryService.name);
   async create(createUserHistoryDto: CreateUserHistoryDto) {
+    this.logger.log(
+      `userHistory create input: ${JSON.stringify(createUserHistoryDto)}`,
+    );
     const user = await this.userModel.findOne({
       _id: createUserHistoryDto.user,
     });
@@ -67,8 +72,10 @@ export class UserHistoryService {
     let userHistory = await this.cacheManager.get('userHistory');
     if (userHistory === undefined) {
       userHistory = await this.userHistoryModel.find().populate('ubid');
+      console.log(userHistory);
       await this.cacheManager.set('userHistory', userHistory);
     }
+    console.log(userHistory);
     return userHistory;
   }
 
@@ -81,7 +88,8 @@ export class UserHistoryService {
     return `This action updates a #${id} userHistory`;
   }
 
-  async remove(id: number) {
+  async remove(id: ObjectId) {
+    return await this.userHistoryModel.findOneAndDelete({ _id: id });
     return `This action removes a #${id} userHistory`;
   }
 }

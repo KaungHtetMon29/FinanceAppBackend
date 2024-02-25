@@ -19,7 +19,7 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 @Module({
   // TaskModule
   imports: [
-    // TaskModule,
+    TaskModule,
     MailerModule.forRoot({
       transport: {
         service: 'gmail',

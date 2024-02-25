@@ -46,7 +46,7 @@ export class UserHistoryController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userHistoryService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.userHistoryService.remove(id);
   }
 }

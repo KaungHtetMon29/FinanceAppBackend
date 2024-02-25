@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
   UseFilters,
 } from '@nestjs/common';
@@ -27,9 +28,14 @@ export class UserBalanceService {
     @Inject('USER_BALANCE_MODEL')
     private userBalanceModel: Model<UserBalanceInterface>,
   ) {}
+  private readonly logger: Logger = new Logger(UserBalanceService.name);
+
   // @UseFilters(new ItemnotFoundFilter())
   async create(createUserBalanceDto: CreateUserBalanceDto) {
     // const { userid, ...balance } = ;
+    this.logger.log(
+      'userBalance create input: ' + JSON.stringify(createUserBalanceDto),
+    );
     const user = await this.userModel.findOne({
       _id: createUserBalanceDto.user,
     });
@@ -77,9 +83,12 @@ export class UserBalanceService {
       }
     }
   }
-
   async update(id: ObjectId, updateUserBalanceDto: UpdateUserBalanceDto) {
     console.log(id);
+    this.logger.log('userBalance update id input: ' + JSON.stringify(id));
+    this.logger.log(
+      'userBalance create input: ' + JSON.stringify(updateUserBalanceDto),
+    );
     try {
       const user = await this.userBalanceModel.findOne({ _id: id });
       if (!user) {
