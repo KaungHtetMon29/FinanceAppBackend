@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
@@ -27,7 +28,11 @@ export class UserHistoryService {
     @Inject('USER_HISTORY_MODEL')
     private userHistoryModel: Model<UserHistoryInterface>,
   ) {}
+  private readonly logger: Logger = new Logger(UserHistoryService.name);
   async create(createUserHistoryDto: CreateUserHistoryDto) {
+    this.logger.log(
+      `userHistory create input: ${JSON.stringify(createUserHistoryDto)}`,
+    );
     const user = await this.userModel.findOne({
       _id: createUserHistoryDto.user,
     });
@@ -67,8 +72,10 @@ export class UserHistoryService {
     let userHistory = await this.cacheManager.get('userHistory');
     if (userHistory === undefined) {
       userHistory = await this.userHistoryModel.find().populate('ubid');
+      console.log(userHistory);
       await this.cacheManager.set('userHistory', userHistory);
     }
+    console.log(userHistory);
     return userHistory;
   }
 
@@ -78,10 +85,35 @@ export class UserHistoryService {
   }
 
   async update(id: ObjectId, updateUserHistoryDto: UpdateUserHistoryDto) {
-    return `This action updates a #${id} userHistory`;
+    const userHistory = await this.userHistoryModel.findOne({ _id: id });
+    if (!userHistory) {
+      throw new NotFoundException('User History not found');
+    }
+    const userBalance = await this.userBalanceModel.findOne({
+      _id: userHistory.ubid,
+    });
+    switch (userHistory.type) {
+      case '+':
+        userBalance.balance -= userHistory.cost;
+        userBalance.balance = userBalance.balance + updateUserHistoryDto.cost;
+        break;
+      case '-':
+        userBalance.balance += userHistory.cost;
+        userBalance.balance = userBalance.balance - updateUserHistoryDto.cost;
+        break;
+    }
+    await this.userBalanceModel.findOneAndUpdate(
+      { _id: userBalance._id },
+      userBalance,
+    );
+    return await this.userHistoryModel
+      .findOneAndUpdate({ _id: id }, updateUserHistoryDto, { new: true })
+      .populate('ubid');
+    // return `This action updates a #${id} userHistory`;
   }
 
-  async remove(id: number) {
+  async remove(id: ObjectId) {
+    return await this.userHistoryModel.findOneAndDelete({ _id: id });
     return `This action removes a #${id} userHistory`;
   }
 }
